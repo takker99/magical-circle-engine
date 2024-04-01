@@ -36,7 +36,7 @@ export type Factor =
 
 export interface AssignNode {
   type: "assign";
-  variable: VariableNode;
+  variable: string;
   value: Factor | FunctionDefinitionNode;
 }
 
@@ -49,7 +49,7 @@ export interface FunctionCallNode {
 
 export interface FunctionDefinitionNode {
   type: "functionDefinition";
-  arguments: VariableNode[];
+  arguments: string[];
   body: Statement[];
 }
 
@@ -109,7 +109,7 @@ const functionDefinition: Parser<FunctionDefinitionNode> = lazy(() =>
     [a, b],
   ) => ({
     type: "functionDefinition",
-    arguments: a,
+    arguments: a.map((v) => v.value),
     body: b,
   } as const))
 );
@@ -183,7 +183,7 @@ const expression: Parser<AssignableNode> = choice(
 const statement: Parser<Statement> = choice(
   variable.wrap(token("!"), token("=")).and(expression).map((
     [a, b],
-  ) => ({ type: "assign", variable: a, value: b } as const)),
+  ) => ({ type: "assign", variable: a.value, value: b } as const)),
   expression,
 );
 
