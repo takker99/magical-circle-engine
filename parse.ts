@@ -4,9 +4,12 @@ import {
   lazy,
   match,
   ok,
+  ParseFail,
+  ParseOK,
   Parser,
   text,
-} from "https://raw.githubusercontent.com/wavebeem/bread-n-butter/v0.6.0/src/bread-n-butter.ts";
+} from "./deps.ts";
+export type { ParseFail, ParseOK, SourceLocation } from "./deps.ts";
 
 export interface NumberNode {
   type: "number";
@@ -37,13 +40,13 @@ export type Factor =
 export interface AssignNode {
   type: "assign";
   variable: string;
-  value: Factor | FunctionDefinitionNode;
+  value: AssignableNode;
 }
 
 export interface FunctionCallNode {
   type: "functionCall";
   name: string;
-  arguments: (Factor | FunctionDefinitionNode)[];
+  arguments: AssignableNode[];
   body?: Statement[];
 }
 
@@ -192,4 +195,5 @@ const line = statement.skip(token(";").thru(optional)).skip(comment);
 
 const program = line.repeat();
 
-export const parse = (text: string) => program.parse(text);
+export const parse = (text: string): ParseFail | ParseOK<Statement[]> =>
+  program.parse(text);
