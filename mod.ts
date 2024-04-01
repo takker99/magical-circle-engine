@@ -22,7 +22,7 @@ export interface VariableNode {
 }
 export interface ExpressionNode {
   type: "expression";
-  operator: string;
+  operator: "*" | "/" | "%" | "+" | "-" | "<" | ">" | "==" | "!=";
   left: Factor;
   right: Factor;
 }
